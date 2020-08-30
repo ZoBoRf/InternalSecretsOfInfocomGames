@@ -2,6 +2,7 @@
 %% Do not edit unless you really know what you are doing.
 \documentclass[12pt,twoside,american]{scrartcl}
 \usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
 \usepackage{geometry}
 \geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=1cm,footskip=1cm}
 \pagestyle{headings}
@@ -11,6 +12,7 @@
 \usepackage{array}
 \usepackage{float}
 \usepackage{url}
+\usepackage{tablefootnote}
 \usepackage{graphicx}
 \usepackage[unicode=true,
  bookmarks=true,bookmarksnumbered=true,bookmarksopen=false,
@@ -42,7 +44,7 @@
 \title{Internal Secrets of Infocom Games\thanks{\protect\url{https://ifsecrets.blogspot.com}}}
 \subtitle{Everything you wanted to know about the internal working of all text-based
 Infocom games}
-\date{April 2019}
+\date{April 2019 {[}2nd Ed.{]}}
 
 \maketitle
 \pagebreak\tableofcontents{}
@@ -75,36 +77,37 @@ games remained a mystery until reverse engineering was done that decoded
 the Z-code format. Much of the knowledge about Z-code was documented
 in the Z-Machine Standards Document by Graham Nelson and Mark Howell.
 In this, the Z-code instructions and data structure used by some of
-those instructions (like Vocabulary by read or objects by get\_prop)
-tables were described. As it was a general document, other data structures
-specific to Infocom games like verb syntaxes were not mentioned. Several
-excellent utilities (infodump by Mark Howell and ZILF by Jesse McGrew
-and Josh Lawren) have helped provide more insight on the data structures
-of Infocom games. Utilities to translate the Z-code to a more easily
-readable format did help show the inner routines of the games. Without
-variable names, attribute references, and object property names, making
-sense of the game code remained difficult. An internal Infocom use
-only document, \textquotedblleft Learning ZIL - or - Everything You
-Always Wanted to Know About Writing Interactive Fiction But Couldn't
-Find Anyone Still Working Here to Ask\textquotedblright , gave basic
-details about the how the games run and how the syntax parts of the
-game were designed in ZIL. The release of an MDL-based Zork source
-code did offer more insight into the inner workings of the original
-Zork game, but understanding MDL was an added barrier. While there
-are basic parsing and command processing algorithms in the MDL-version
-of Zork, they were significantly changed when translated to the microcomputer
-versions. The release of the Mini-Zork source code and other tidbits
-from the Infocom cabinet helped unmask and clarify the game code and
-the coding process that are essential to all Infocom games.
+those instructions (like Vocabulary by \texttt{read} or objects by
+\texttt{get\_prop}) tables were described. As it was a general document,
+other data structures specific to Infocom games like verb syntaxes
+were not mentioned. Several excellent utilities (infodump by Mark
+Howell and ZILF by Jesse McGrew and Josh Lawren) have helped provide
+more insight on the data structures of Infocom games. Utilities to
+translate the Z-code to a more easily readable format did help show
+the inner routines of the games. Without variable names, attribute
+references, and object property names, making sense of the game code
+remained difficult. An internal Infocom use only document, \textquotedblleft \emph{Learning
+ZIL - or - Everything You Always Wanted to Know About Writing Interactive
+Fiction But Couldn't Find Anyone Still Working Here to Ask}\textquotedblright ,
+gave basic details about the how the games run and how the syntax
+parts of the game were designed in ZIL. The release of an MDL-based
+Zork source code did offer more insight into the inner workings of
+the original Zork game, but understanding MDL was an added barrier.
+While there are basic parsing and command processing algorithms in
+the MDL-version of Zork, they were significantly changed when translated
+to the microcomputer versions. The release of the \textbf{Mini-Zork}
+source code and other tidbits from the Infocom cabinet helped unmask
+and clarify the game code and the coding process that are essential
+to all Infocom games.
 
 This blog will describe those hidden details of Infocom games, using
-Zork 1 as the base. It will also provide some of the modifications
+\textbf{Zork 1} as the base. It will also provide some of the modifications
 made to these core routines by specific Infocom games. Subsequent
 post will provide the inner puzzle workings in all Infocom games.
 Only the text games will be used. None of the graphics based games
 are analyzed.
 
-All routine and variable names in the Infocom source code (Mini-Zork)
+All routine and variable names in the Infocom source code (\textbf{Mini-Zork})
 and documentation are in all capital letters. Game names are in bold.
 Unnamed variables and routines are given names that are a best guess.
 
@@ -138,13 +141,14 @@ recreated, but only the first 5 were used for text-only games.
 
 Many of the Z-code instructions used in Infocom games are in this
 first version of ZIP. It is unclear what the memory requirements are
-for it though. Only one ZIP 1 game, Zork 1, was ever released by Infocom.
+for it though. Only one ZIP 1 game, \textbf{Zork 1}, was ever released
+by Infocom.
 
 \subsection{ZIP version 2 }
 
-ZIP 2 was used to create Zork 1-R15 and the first version of Zork
-2. It introduced frequent words (AKA abbreviations) and a new header
-element (serial number) which is just a 6 digit ASCII representation
+ZIP 2 was used to create \textbf{Zork 1}-R15 and the first version
+of Zork 2. It introduced frequent words (AKA abbreviations) and a
+new header element (serial number) which is just a 6 digit ASCII representation
 of the release date in year-month-day format. 
 
 \subsection{ZIP version 3}
@@ -176,8 +180,8 @@ against these values.
 
 \subsection{Enhanced ZIP (EZIP), version 4}
 
-Version 4, renamed Enhanced ZIP (EZIP), was introduced with A Mind
-Forever Voyaging. A smaller version of EZIP was apparently created
+Version 4, renamed Enhanced ZIP (EZIP), was introduced with \textbf{A
+Mind Forever Voyaging}. A smaller version of EZIP was apparently created
 called, LZIP, or lower-case EZIP for computers with memory limitations.
 The minimal hardware requirements for EZIP were at least 128KB of
 memory and a single disk drive that can at least access 140KB. The
@@ -279,21 +283,21 @@ versions. The complete layout is in Appendix A.
 \subsection{The Memory Layout of Infocom Games }
 
 The layout of data in the Infocom game files is fairly consistent
-between games. An example using Zork 1 is shown below. The \textquotedblleft memory\textquotedblright{}
-of the emulated Z-machine is first loaded with the header information
-starting at \$0000. Memory from \$0000 up to PURBOT encompasses the
-writeable memory such as variables, objects, tables, and buffers.
-Data after PURBOT is read-only data such as syntax data, routines,
-preposition data, and strings. The exact locations of the syntax data,
-action routines, and preposition table are stored in global variables,
-not the header. The ZIP will continue to load data into memory. All
-data up to the address in ENDLOD must be loaded. The ZIP may decide
-to load data past ENDLOD at its discretion. All data after ENDLOD
-can be swapped out with other disk-based data as needed. Usually routines
-and strings are the data that is swapped. All important and quickly
-accessible data remains resident in memory below the ENDLOD address.
-A sample layout of data structure in Zork 1 gives more details (using
-infodump):
+between games. An example using \textbf{Zork 1} is shown below. The
+\textquotedblleft memory\textquotedblright{} of the emulated Z-machine
+is first loaded with the header information starting at \$0000. Memory
+from \$0000 up to PURBOT encompasses the writeable memory such as
+variables, objects, tables, and buffers. Data after PURBOT is read-only
+data such as syntax data, routines, preposition data, and strings.
+The exact locations of the syntax data, action routines, and preposition
+table are stored in global variables, not the header. The ZIP will
+continue to load data into memory. All data up to the address in ENDLOD
+must be loaded. The ZIP may decide to load data past ENDLOD at its
+discretion. All data after ENDLOD can be swapped out with other disk-based
+data as needed. Usually routines and strings are the data that is
+swapped. All important and quickly accessible data remains resident
+in memory below the ENDLOD address. A sample layout of data structure
+in \textbf{Zork 1} gives more details (using infodump):
 \begin{verbatim}
 Base   End  Size
  0000    3F   40 Story file header
@@ -517,8 +521,8 @@ The highest 7 bits indicate how PARSER searches and checks on requested
 objects. For example, PARSER will not complete an action with an object
 on the ground if its syntax entry requires an object be held or carried.
 While \textquotedblleft Learning ZIL\textquotedblright{} has listed
-9 possible properties, the source code for Mini-Zork indicates only
-7 are used through version 3:\medskip{}
+9 possible properties, the source code for \textbf{Mini-Zork} indicates
+only 7 are used through version 3:\medskip{}
 
 \begin{tabular}{|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|}
 \hline 
@@ -625,9 +629,9 @@ code from initialization of the game through handling interrupts.
 The repeated use of previous code help minimize new bugs and kept
 the play of the games consistent. But every game had some kind of
 new code which could introduce bugs. The description of these main
-backbone routines will be from the original Zork 1 game from 1979.
-Information about updates to these routines will then follow each
-section.
+backbone routines will be from the original \textbf{Zork 1} game from
+1979. Information about updates to these routines will then follow
+each section.
 
 \subsection{Initialization with GO}
 
@@ -710,13 +714,13 @@ and then become disabled.
 
 \subsection{Graphic representation of Game Flow}
 
-Routine layout for Zork 1. Dotted lines indicate the order of function
-calls by MAIN-LOOP.
+Routine layout for \textbf{Zork 1}. Dotted lines indicate the order
+of function calls by MAIN-LOOP.
 
 \begin{figure}[H]
 \includegraphics[width=1\columnwidth]{figures/RoutineLayoutForZork1}
 
-\caption{Routine Layout for Zork 1}
+\caption{Routine Layout for \textbf{Zork 1}}
 
 \end{figure}
 
@@ -1076,7 +1080,7 @@ with FALSE. If there is a match, the result returned depends on the
 third argument. If no third argument is given, the routine will return
 TRUE. If the third argument matches the secondary word type (as described
 in Section 2.6), then the secondary ID is returned. Otherwise, the
-primary ID is return regardless if it is a valid word type for the
+primary ID is returned regardless if it is a valid word type for the
 primary ID.\medskip{}
 
 \begin{tabular}{|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|}
@@ -1614,12 +1618,12 @@ one. The dictionary address for the replaced token will then be modified
 as normal.
 
 \section{CLAUSE: Find the Noun Clause Boundaries}
-
-Arguments: Start address of clause, Preposition number of clause,
+\begin{description}
+\item [{Arguments:}] Start address of clause, Preposition number of clause,
 Vocabulary address of current token
-
-Return: Address to start of clause, -1 if no tokens are left to process,
-or FALSE if error in clause syntax
+\item [{Return:}] Address to start of clause, -1 if no tokens are left
+to process, or FALSE if error in clause syntax
+\end{description}
 
 \subsection{Introduction}
 
@@ -2546,12 +2550,12 @@ if P-MERGED is also clear and also copied over VTBL to OVTBL.
 
 \textbf{Mini-Zork} has a modified ORPHAN because it uses a modified
 syntax entry format. Instead of manually getting the preposition number
-from the syntax entry, Mini-Zork calls a separate routine that extracts
-is from the modified syntax entry format. Version 4 and 5 games could
-call CLAUSE-COPY with more arguments and needed fewer global variables.
-So CC-TBL was not needed anymore. Version 5 games used the same routine
-as the Version 4 games but using the COPY-TABLE command that replaced
-the manual copying loop in ORPHAN.
+from the syntax entry, \textbf{Mini-Zork} calls a separate routine
+that extracts is from the modified syntax entry format. Version 4
+and 5 games could call CLAUSE-COPY with more arguments and needed
+fewer global variables. So CC-TBL was not needed anymore. Version
+5 games used the same routine as the Version 4 games but using the
+COPY-TABLE command that replaced the manual copying loop in ORPHAN.
 
 \textbf{Bureaucracy} uses the same routine as \textbf{AMFV} except
 it copies the object clauses into separate token buffers, OCLAUSE
@@ -3692,7 +3696,7 @@ Infocom did use programming macros for creating the proper text display
 routines. These macros would then be expanded into the proper ZIL
 code during compiling. It is difficult to figure out which was the
 first game to use this without the source code. The macros are seen
-in the Mini-Zork source code.
+in the \textbf{Mini-Zork} source code.
 
 \subsection{Abbreviations / Frequent words table}
 
@@ -4254,4 +4258,750 @@ the sophistication of these early text adventure games in just about
 skill with ZIL and the efficiency of Z-code. Hopefully, the information
 here has helped cracked the inner workings of these legendary games
 and made them more enjoyable and appreciated decades later.
+
+\addsec{Appendix A: Story Headers}
+
+\subsection*{Header Layout}
+
+\subsubsection*{Original header layout found in all ZIP versions}
+
+\begin{table}[H]
+\begin{tabular}{|>{\raggedright}p{0.1\textwidth}|>{\raggedright}p{0.15\textwidth}|>{\raggedright}p{0.65\textwidth}|}
+\hline 
+Word No. & Name & Function\tabularnewline
+\hline 
+\hline 
+00 & ZVERSION & Byte 0: Z-machine version
+
+Byte 1: Z-machine mode\tablefootnote{Z-machine mode is described but never used (bit flags)}\tabularnewline
+\hline 
+01 & ZORKID & Release number\tabularnewline
+\hline 
+02 & ENDLOD & End address of pre-loaded memory (code and data),\linebreak{}
+Base of High Memory (start of non-preloaded data)\tabularnewline
+\hline 
+03 & START  & Address of first instruction (not routine), Program Counter\tabularnewline
+\hline 
+04 & VOCAB & Address to Vocabulary table\tabularnewline
+\hline 
+05 & OBJECT & Object data address\tabularnewline
+\hline 
+06 & GLOBALS & Address to Global Variable table\tabularnewline
+\hline 
+07 & PURBOT & Start address of read-only (static) memory, code and data\tabularnewline
+\hline 
+08 & FLAGS & Flags, 16 bits\tabularnewline
+\hline 
+\end{tabular}
+\end{table}
+
+\subsubsection*{ZIP version 2 added the abbreviation information}
+
+\begin{table}[H]
+\begin{tabular}{|>{\raggedright}p{0.1\textwidth}|>{\raggedright}p{0.15\textwidth}|>{\raggedright}p{0.65\textwidth}|}
+\hline 
+09-0B & SERIAL & Bytes 12 to 17: Serial Number in ASCII characters (words also labeled
+as SERIAL, SERI1, and SERI2)\tabularnewline
+\hline 
+0C & FWORDS & Address to Frequently used words (Abbreviation) table\tabularnewline
+\hline 
+\end{tabular}
+\end{table}
+
+\subsubsection*{ZIP version 3 added game information}
+
+\begin{table}[H]
+\begin{tabular}{|>{\raggedright}p{0.1\textwidth}|>{\raggedright}p{0.15\textwidth}|>{\raggedright}p{0.65\textwidth}|}
+\hline 
+0D & PLENTH & Length of game file (shifted??)\tabularnewline
+\hline 
+0E & PCHKSM & Checksum of game file\tabularnewline
+\hline 
+\end{tabular}
+\end{table}
+
+\subsubsection*{EZIP version extended story header layout}
+
+\begin{table}[H]
+\begin{tabular}{|>{\raggedright}p{0.1\textwidth}|>{\raggedright}p{0.15\textwidth}|>{\raggedright}p{0.65\textwidth}|}
+\hline 
+0F & INTWRD & Byte 1E: INTID/Interpreter number\linebreak{}
+Byte 1F: INTVR/version\tabularnewline
+\hline 
+10 & SCRWRD\tablefootnote{This word is set by the ZIP at startup.} & Byte 20: SCRV, Screen size in lines (\$FF = printing terminal)\linebreak{}
+Byte 21: SCRH, Screen width in characters \tabularnewline
+\hline 
+\end{tabular}
+\end{table}
+
+\subsubsection*{XZIP also extended story header layout}
+
+\begin{table}[H]
+\begin{tabular}{|>{\raggedright}p{0.1\textwidth}|>{\raggedright}p{0.15\textwidth}|>{\raggedright}p{0.65\textwidth}|}
+\hline 
+11 & HWRD & Screen horizontal size of display in pixels\tabularnewline
+\hline 
+12 & VWRD & Screen vertical size of display in pixels\tabularnewline
+\hline 
+13 & FWRD & Byte 26: Font height\linebreak{}
+Byte 27: Font width\tabularnewline
+\hline 
+14 & LMRG & Screen left margin in pixels\tabularnewline
+\hline 
+15 & RMRG & Screen right margin in pixels\tabularnewline
+\hline 
+16 & CLRWRD & Byte 2C: Background color\linebreak{}
+Byte 2D: Foreground color\tabularnewline
+\hline 
+17 & TCHARS & Pointer to table of terminating characters\tabularnewline
+\hline 
+18 & CRCNT & Counter for carriage returns\tabularnewline
+\hline 
+19 & CRFUNC & Function for carriage returns\tabularnewline
+\hline 
+1A & CHRSET & Pointer to character set table\tabularnewline
+\hline 
+1B & EXTAB & Pointer to extension table, if needed\tabularnewline
+\hline 
+1C-1F & USRNM & Bytes 38 to 3F: Username in ASCII characters\tabularnewline
+\hline 
+\end{tabular}
+\end{table}
+
+\subsection*{MODE Byte}
+
+The MODE byte is the the second byte in the ZVERSION word of the story
+header. No bits are used in the Zork 1 and 2 games released by Infocom.
+Bits 0-1 are set by the ZAP assembler while bits 3 through 6 are set
+by the ZIP on startup.
+
+\subsubsection*{Mode bits for ZIP version 3}
+
+\begin{table}[H]
+\begin{tabular}{|>{\raggedright}p{0.1\textwidth}|>{\raggedright}p{0.3\textwidth}|>{\raggedright}p{0.5\textwidth}|}
+\hline 
+Bit No. & Bit Name & Function\tabularnewline
+\hline 
+\hline 
+0 & byte-swap & 0 = high order byte first, 1 = low order byte first\tabularnewline
+\hline 
+1 & status line format & 0 = score/turns, 1 = hours:minutes\tabularnewline
+\hline 
+2 & machine-specific function & Story file split across two discs???\tabularnewline
+\hline 
+3 & Tandy bit & 0 = non-Tandy, 1 = Tandy (to censor some informatino)\tabularnewline
+\hline 
+4 & status line existence & 0 = present, 1 = hiding\tabularnewline
+\hline 
+5 & splitability & 0 = split screen functions ignored, 1 = split screen functions available\tabularnewline
+\hline 
+6 & reserved & Default font is a Variable-width font???\tabularnewline
+\hline 
+7 & reserved & ????\tabularnewline
+\hline 
+\end{tabular}
+\end{table}
+
+\subsubsection*{Mode bits for EZIP (ZIP version 4)}
+
+\begin{table}[H]
+\begin{tabular}{|>{\raggedright}p{0.1\textwidth}|>{\raggedright}p{0.3\textwidth}|>{\raggedright}p{0.5\textwidth}|}
+\hline 
+Bit No. & EZIP Bit Name & Function\tabularnewline
+\hline 
+\hline 
+0 & ESPLIT (screen operations) & SPLIT/SCREEN/CLEAR functions\tabularnewline
+\hline 
+1 & EHINV (highlight inverse) & Inverse highlight is not available\tabularnewline
+\hline 
+2 & EHBLD (highlight bold) & Bold highlight is not available\tabularnewline
+\hline 
+3 & EHUND (highlight underline-italics) & Underline-italic highlight not available\tabularnewline
+\hline 
+4 & ECURS (cursor addressing) & CURSET/CURGET ignored\tabularnewline
+\hline 
+5 & ESOUN (SOUND opcode) & SOUND opcode is ignored\tabularnewline
+\hline 
+6 &  & Reserved\tabularnewline
+\hline 
+7 &  & Reserved\tabularnewline
+\hline 
+\end{tabular}
+\end{table}
+0 = not available/ignored, 1 = available
+
+\subsubsection*{Mode bits for XZIP (ZIP version 5)}
+
+\begin{table}[H]
+\begin{tabular}{|>{\raggedright}p{0.1\textwidth}|>{\raggedright}p{0.3\textwidth}|>{\raggedright}p{0.5\textwidth}|}
+\hline 
+Bit No. & Bit Name & Function\tabularnewline
+\hline 
+\hline 
+0 & XCOLOR & COLOR operations\tabularnewline
+\hline 
+1 & XDISP & DISPLAY (show images) operation\tabularnewline
+\hline 
+2 & XBOLD & Bold\tabularnewline
+\hline 
+3 & XUNDE & Italic/underline\tabularnewline
+\hline 
+4 & XMONO & Monospace style font\tabularnewline
+\hline 
+5 & XSOUN & SOUND\tabularnewline
+\hline 
+6 &  & Reserved\tabularnewline
+\hline 
+7 &  & Reserved\tabularnewline
+\hline 
+\end{tabular}
+\end{table}
+0 = not available/ignored, 1 = available
+
+\subsubsection*{Extension table}
+
+\begin{table}[H]
+\begin{tabular}{|>{\raggedright}p{0.2\textwidth}|>{\raggedright}p{0.2\textwidth}|>{\raggedright}p{0.5\textwidth}|}
+\hline 
+MSLOCX & word 1 & \tabularnewline
+\hline 
+MSLOCY & word 2 & \tabularnewline
+\hline 
+MSETBL & word 3 & writable\tabularnewline
+\hline 
+MSEDIR & word 4 & writable\tabularnewline
+\hline 
+MSEINV & word 5 & writable\tabularnewline
+\hline 
+MSEVRB & word 6 & writable\tabularnewline
+\hline 
+MSEWRD & word 7 & writable\tabularnewline
+\hline 
+BUTTON & word 8 & writable\tabularnewline
+\hline 
+JOYSTICK & word 9 & writable\tabularnewline
+\hline 
+BSTAT & word 10 & writable\tabularnewline
+\hline 
+JSTAT & word 11 & writable\tabularnewline
+\hline 
+\end{tabular}
+\end{table}
+
+\subsection*{FLAGS Bits}
+
+\subsubsection*{FLAGS bits for ZIP}
+
+\begin{table}[H]
+\begin{tabular}{|>{\raggedright}p{0.1\textwidth}|>{\raggedright}p{0.1\textwidth}|>{\raggedright}p{0.2\textwidth}|>{\raggedright}p{0.5\textwidth}|}
+\hline 
+Bit No. & Versions & Bit Name & Function\tabularnewline
+\hline 
+\hline 
+0 & 1-5 & FSCRI & Interpreter currently transcripting\tabularnewline
+\hline 
+1 & 3-4 & FFIXE & Fixed-width font needed\tabularnewline
+\hline 
+2 & 4-5 & FSTAT & Refresh Status Line (by interpreter)\tabularnewline
+\hline 
+3 & 5 & FDISP & DISPLAY (show images) available\tabularnewline
+\hline 
+4 & 5 & FUNDO & UNDO available\tabularnewline
+\hline 
+5 & 5 & FMOUS & MOUSE available\tabularnewline
+\hline 
+6 & 5 & FCOLO & COLOR available\tabularnewline
+\hline 
+7-15 & 1-5 &  & Reserved\tabularnewline
+\hline 
+\end{tabular}
+\end{table}
+From E- and X-ZIP - Internal Infocom document
+
+\addsec{Appendix B: Attributes and Properties From \textquotedblleft Learning
+ZIL\textquotedblright{}}
+
+\subsection*{Object Attributes (through YZIP)}
+\begin{description}
+\item [{TAKEBIT}] One of the most basic bits, this means that the player
+can pick up and carry the object.
+\item [{TRYTAKEBIT}] This bit tells the parser not to let the player implicitly
+take an object
+\end{description}
+\begin{itemize}
+\item This is important if the object has a value and must be scored, or
+if the object has an NDESCBIT which must be cleared, or if you want
+taking the object to set a flag or queue a routine, or...
+\end{itemize}
+\begin{description}
+\item [{CONTBIT}] The object is a container; things can be put inside it,
+it can be opened and closed, etc.
+\item [{DOORBIT}] The object is a door and various routines, such as V-OPEN,
+should treat it as such.
+\item [{OPENBIT}] The object is a door or container, and is open.
+\item [{SURFACEBIT}] The object is a surface, such as a table, desk, countertop,
+etc.
+\end{description}
+\begin{itemize}
+\item Any object with the surfacebit should also have the CONTBIT (since
+you can put things on the surface) and the OPENBIT (since you can't
+close a countertop as you can a box).
+\end{itemize}
+\begin{description}
+\item [{LOCKEDBIT}] Tells routines like V-OPEN that an object or door is
+locked and can't be opened without proper equipment.
+\item [{WEARBIT}] The object can be wearable, not that it is actually being
+worn.
+\item [{WORNBIT}] This means that a wearable object is currently being
+worn.
+\item [{READBIT}] The object is readable. Any object with a TEXT property
+should have the READBIT.
+\item [{LIGHTBIT}] The object is capable of being turned on and off. Doesn't
+mean that the object is actually on.
+\item [{ONBIT}] For room, it is lit. Outdoor rooms should have ONBIT if
+daytime. For objects, it is providing light. An object with the ONBIT
+should also have the LIGHTBIT.
+\item [{FLAMEBIT}] This means that the object is a source of fire.
+\end{description}
+\begin{itemize}
+\item Object should also have the ONBIT and the LIGHTBIT
+\end{itemize}
+\begin{description}
+\item [{BURNBIT}] The object is burnable.
+\item [{TRANSBIT}] The object is transparent; objects inside it can be
+seen even if it is closed.
+\item [{NDESCBIT}] The object shouldn't be described by the describers.
+\end{description}
+\begin{itemize}
+\item This usually means that someone else, such as the room description,
+is describing the object. Any takeable object, once taken, should
+have its NDESCBIT cleared.
+\end{itemize}
+\begin{description}
+\item [{INVISIBLE}] Tells the parser not to find this object. The intention
+is to clear the invisible at some point.
+\item [{TOUCHBIT}] For rooms, player has been to the room at least once.
+For objects, it has been taken or otherwise disturbed by the player
+\end{description}
+\begin{itemize}
+\item Once the TOUCHBIT is set, if it has an FDESC, that FDESC will no longer
+be used
+\end{itemize}
+\begin{description}
+\item [{SEARCHBIT}] Tells the parser to look as deeply into a container
+as it can in order to find the referenced object.
+\end{description}
+\begin{itemize}
+\item Without the SEARCHBIT, the parser will only look down one level.
+\item Objects with a SURFACEBIT essentially function as objets with a SEARCHBIT
+\end{itemize}
+\begin{description}
+\item [{VEHBIT}] This means that the object is a vehicle, and can be entered
+or boarded by the player.
+\end{description}
+\begin{itemize}
+\item All objects with the VEHBIT should usually have the CONTBIT and the
+OPENBIT.
+\end{itemize}
+\begin{description}
+\item [{PERSONBIT}] This means that the object is a character in the game,
+and such act accordingly.
+\item [{FEMALEBIT}] The object is an ACTOR who is a female.
+\item [{VOWELBIT}] Any verb default which prints an indefinite article
+before the DESC, use \textquotedbl an\textquotedbl{} instead of \textquotedbl a.\textquotedbl{}
+\item [{NARTICLEBIT}] The object's DESC doesn't not work with articles,
+and they should be omitted.
+\item [{PLURALBIT}] The object's DESC is a plural noun or noun phrase.
+The DESC should act accordingly.
+\item [{RLANDBIT}] Usually used for rooms, llets any routine know that
+the room is dry land (as most are).
+\item [{RWATERBIT}] The room is water rather than dry land
+\item [{RAIRBIT}] The room is in mid-air, for those games with some type
+of flying.
+\item [{KLUDGEBIT}] This bit is used only in the syntax file.
+\end{description}
+\begin{itemize}
+\item It is used for those syntaxes which want to be simply VERB PREPOSITION
+with no object. Put (FIND KLUDGEBIT) after the object. The parser,
+rather than complaining about the missing noun, will see the FIND
+KLUDGEBIT and set the PRSO (or PRSI as the case may be) to the ROOMS
+object.
+\end{itemize}
+\begin{description}
+\item [{OUTSIDEBIT}] Used in rooms to classify the room as an outdoors
+room.
+\item [{INTEGRALBIT}] An integral part of another object, and can't be
+independently taken or dropped.
+\item [{PARTBIT}] The object is a body part: the HANDS object, for example.
+\item [{NALLBIT}] This has something to do with telling a TAKE ALL not
+to take something, but I don't recall how it works. Help???
+\item [{DROPBIT}] Found in vehicles, this not-very-important flag means
+that if the player drops something while in that vehicle, the object
+should stay in the vehicle rather than falling to the floor of the
+room itself.
+\item [{INBIT}] Another not-too-important vehicle-related flag, it tells
+various routines to say \textquotedbl in the vehicle\textquotedbl{}
+rather than \textquotedbl on the vehicle\textquotedblright .
+\end{description}
+
+\subsection*{Object Properties (through YZIP)}
+\begin{description}
+\item [{NORTH,~SOUTH,~EAST,~WEST,~NE,~SE,~NW,~SW}] These are the
+direction properties, generally used only in room definitions.
+\end{description}
+\begin{itemize}
+\item Note that the cardinal direction properties are not abbreviated, but
+that the non-cardinal ones are abbreviated. There is no direction
+property called NORTHEAST, for example.
+\end{itemize}
+\begin{description}
+\item [{UP,~DOWN}] These are just like the eight direction properties.
+\item [{IN,~OUT}] These are just like the eight direction properties.
+\end{description}
+\begin{itemize}
+\item If the player just types IN or OUT, this property will handle the
+movement. Generally, it's a good idea to give the OUT property to
+any room with only one exit.
+\end{itemize}
+\begin{description}
+\item [{SYNONYM}] Contains a list of the nouns which can be used to refer
+to the object.
+\item [{ADJECTIVE}] Contains a list of the adjectives which can be used
+to refer to the object.
+\item [{ACTION}] Defines the action routine associated with the object.
+\end{description}
+\begin{itemize}
+\item In the case of an object, the action routine is called when the object
+is the PRSO or the PRSI of the player's input. In the case of a room,
+the routine is called with M-BEG and MEND once each turn, with M-ENTER
+whenever the room is entered, and with MLOOK whenever the describers
+need to describe the room.
+\end{itemize}
+\begin{description}
+\item [{DESCFCN}] Defines the routine which the describers use to describe
+the object.
+\end{description}
+\begin{itemize}
+\item This can be the same routine as the object's action routine, provided
+that the routine is set up to handle the optional variable (M-OBJDESC
+or M-OBJDESC?).
+\end{itemize}
+\begin{description}
+\item [{CONTFCN}] Indicates a special ROUTINE to call for objects contained
+in this object
+\item [{GENERIC}] Defines the routine which handles cases where the parser
+determines an ambiguity about which object the player is referring
+to.
+\end{description}
+\begin{itemize}
+\item In the absence of a generic property, the parser will simply ask \textquotedbl Which
+FOO do you mean...\textquotedbl{}
+\end{itemize}
+\begin{description}
+\item [{DESC}] Technically, this isn't a property, but it looks just like
+one when you define an object.
+\end{description}
+\begin{itemize}
+\item It contains the string which, in the case of objects,will be used
+in verb defaults, player's inventory, etc. In the case of rooms, it
+is the room name which appears before room description and on the
+status line.
+\end{itemize}
+\begin{description}
+\item [{SDESC}] Using this property is the only way to give an object a
+changable DESC.
+\end{description}
+\begin{itemize}
+\item You can't <PUTP .OBJECT ,P?DESC \textquotedbl new desc\textquotedbl >
+but you can <PUTP .OBJECT ,P?SDESC \textquotedbl new desc\textquotedbl >.
+Be warned, however, that if your game \textquotedbl shell\textquotedbl{}
+isn't set up for SDESCs, you will have to change every verb default.
+Also, be warned that doing this will increase the size of your game
+by hundreds of bytes or more, since the verb defaults will no longer
+simply TELL the desc of the object, but must instead call a little
+routine which decides whether the object in question has an SDESC
+or not.
+\end{itemize}
+\begin{description}
+\item [{LDESC}] In the case of a room, this contains a string which the
+describers use for the long description of the room.
+\end{description}
+\begin{itemize}
+\item In the case of an object, this contains a string which the describers
+use to describe the object if it is on the ground.
+\end{itemize}
+\begin{description}
+\item [{FDESC}] This property, which isn't usually used in room definitions,
+contains a string which the describers use to describe the object
+before the first time it is moved.
+\item [{LOC}] Once again, technically not a property, but it looks just
+like one when you're creating an object.
+\end{description}
+\begin{itemize}
+\item Simply, this property contains the name of the object which contains
+this object (in the case of a room, this is the object ROOMS).
+\end{itemize}
+\begin{description}
+\item [{SIZE}] Contains a number which is the size/weight of the object.
+\end{description}
+\begin{itemize}
+\item Generally, it is only meaningful for a takeable object. If a takeable
+object has no size property, the game usually gives it a default size
+of 5. The size of an object affects the number of object that a player
+can carry, how much of a container it takes up, and so on.
+\end{itemize}
+\begin{description}
+\item [{CAPACITY}] Contains a number which is the capacity of the object.
+\end{description}
+\begin{itemize}
+\item Generally, it is only meaningful for a container. If a container has
+no size property, the game usually gives it a default capacity of
+5. The capacity of a container affects the number of objects which
+can be placed inside it.
+\end{itemize}
+\begin{description}
+\item [{VALUE}] This property is used in many games that have scoring.
+\end{description}
+\begin{itemize}
+\item The property contains a number; in the case of rooms, it is the number
+of points the player gets for entering the room for the first time;
+in the case of objects, it is the number of points the player gets
+for picking up the object for the first time.
+\end{itemize}
+\begin{description}
+\item [{GLOBAL}] Generally found only in room definitions, this property
+contains a list of objects which are local-globals referencable in
+that room.
+\item [{OWNER}] Defines an object which is the owner of this object.
+\end{description}
+\begin{itemize}
+\item For example, the SPORTS-CAR object might have the property (OWNER
+CYBIL) so that the player could refer to the car as \textquotedbl Cybil's
+car\textquotedbl{} even though Cybil isn't actually holding the car.
+When Cybil sells the car to the player, you would <PUTP ,SPORTS-CAR
+,P?OWNER ,PROTAGONIST> so that the player could now refer to it as
+\textquotedbl my car.\textquotedbl{}
+\end{itemize}
+\begin{description}
+\item [{TEXT}] This property contains a string which is used when the player
+tries to read the object.
+\end{description}
+\begin{itemize}
+\item It exists for those objects which would otherwise need an action routine
+to handle READ but nothing else.
+\end{itemize}
+\begin{description}
+\item [{THINGS}] Formerly known as the PSEUDO property, this property allows
+you to create \textquotedbl pseudo-objects\textquotedbl{} with some
+of the properties of real objects.
+\end{description}
+\begin{itemize}
+\item They have three parts: a list of adjectives, a list of nouns, and
+an action routine. Here's example: (THINGS (RED CARMINE) (SCARF ASCOT)
+RED-SCARF-F). Pseudo objects are very limited, however. They cannot
+have flags, and they cannot be moved. It is beneficial to use them
+whenever feasible, because (unlike real objects) they take up no pre-load
+space.
+\end{itemize}
+\begin{description}
+\item [{ADJACENT}] Something to do with adjacent rooms and referencability.
+Stu?
+\item [{PLURAL}] Stu?
+\item [{PICTURE}] Contains the name of a graphic from the picture file
+associated with the room or object.
+\item [{FLAGS}] This is another fellow which looks just like a property
+but isn't actually a property.
+\end{description}
+\begin{itemize}
+\item It contains a list of all the flags which are FSET in that object
+at the start of the game. A list of the common flags can be found
+in the next appendix. (BY the time YZIP was used, attributes were
+just considered a list of flags in this property and not a special
+entity).
+\end{itemize}
+For all exit (direction) properties, the type of exit depends on the
+length of the property:
+\begin{table}[H]
+\begin{tabular}{|>{\raggedright}p{0.2\textwidth}|>{\raggedright}p{0.1\textwidth}|>{\raggedright}p{0.6\textwidth}|}
+\hline 
+Unconditional Exit & 1 byte & Byte 0: room number\tabularnewline
+\hline 
+No Exit & 2 bytes & Byte 0-1: Z-string address of exit error\tabularnewline
+\hline 
+Functional Exit & 3 bytes & Byte 0-1: Routine address, \linebreak{}
+Byte 2: 00\tabularnewline
+\hline 
+Conditional Exit & 4 bytes & Byte 0: Room number, \linebreak{}
+Byte 1: Global variable, \linebreak{}
+Byte 2-3: Z-string address for exit error\tabularnewline
+\hline 
+Door Exit & 5 bytes & Byte 0: Room number, \linebreak{}
+Byte 1: Door object number, \linebreak{}
+Byte 2-3: Z-string address for exit error, \linebreak{}
+Byte 4: 00\tabularnewline
+\hline 
+\end{tabular}
+\end{table}
+ZIL-course from the Infocom Cabinet does mention two attributes and
+one property not mentioned in \textquotedblleft Learning ZIL\textquotedblright :
+\begin{itemize}
+\item FURNITURE attribute: The object is a piece of furniture that a player
+or actor can sit on.
+\item RMUNGBIT attribute: This applies to rooms only and indicates the room
+does not exist or accessable. The appropriate error message needs
+to be given in the LDESC property. This is a cleaner method of removing
+a room.
+\item IN property: The container of this object
+\end{itemize}
+
+\addsec{Appendix C: Object Attributes and Properties in Zork 1}
+
+\subsection*{Attributes}
+
+\begin{table}[H]
+\begin{tabular}{|>{\raggedright}p{0.1\textwidth}|>{\raggedright}p{0.2\textwidth}|>{\raggedright}p{0.6\textwidth}|}
+\hline 
+\$00 & MAZEBIT & Room is part of the maze.\tabularnewline
+\hline 
+\$01 & HOUSEBIT & Room is part of the house.\tabularnewline
+\hline 
+\$02 & RLANDBIT & Room is on dry land.\tabularnewline
+\hline 
+\$03 & ONBIT & For objects, it gives light. For locations, it is lit. All outdoor
+rooms should have ONBIT set.\tabularnewline
+\hline 
+\$04 & FLAMEBIT & Object can be a source of fire. LIGHTBIT should also be set.\tabularnewline
+\hline 
+\$05 & VEHBIT & Object can be entered or boarded by the player.\tabularnewline
+\hline 
+\$06 & LIGHTBIT & Object can be turned on or off.\tabularnewline
+\hline 
+\$07 & KNIFEBIT & Object can cut other objects.\tabularnewline
+\hline 
+\$08 & BURNBIT & Object can be burned.\tabularnewline
+\hline 
+\$09 & READBIT & Object can be read.\tabularnewline
+\hline 
+\$0A & SURFACEBIT & Object is a container and hold objects which are always visible. CONTBIT
+and OPENBIT should be set as well.\tabularnewline
+\hline 
+\$0B & SWITCHBIT & Object can be turned on or off.\tabularnewline
+\hline 
+\$0C & TRYTAKEBIT & object could be picked up but other values or routines need to be
+checked.\tabularnewline
+\hline 
+\$0D & OPENBIT & Object is can be opened or closed, refers to doors and containers.\tabularnewline
+\hline 
+\$0E & CONTBIT & Object is a container and can contain other objects or be open/closed/transparent.\tabularnewline
+\hline 
+\$0F & TRANSBIT & Object is transparent so objects inside it can be found even if OPENBIT
+is clear.\tabularnewline
+\hline 
+\$10 & FOODBIT & Object can be eaten.\tabularnewline
+\hline 
+\$11 & TAKEBIT & Object can be picked up or carried\tabularnewline
+\hline 
+\$12 & ACCEPTBIT? & (can accept objects)\tabularnewline
+\hline 
+\$13 & SACREDBIT & \tabularnewline
+\hline 
+\$14 & PERSONBIT & Object is a character in the game.\tabularnewline
+\hline 
+\$15 & DOORBIT & Object is a door.\tabularnewline
+\hline 
+\$16 & DRINKBIT & Object can be drunk.\tabularnewline
+\hline 
+\$17 & TOOLBIT & Object can be used as a tool to open other things.\tabularnewline
+\hline 
+\$18 & CLIMBBIT & Object can be climbed\tabularnewline
+\hline 
+\$19 & INTEGRALBIT & Object cannot be taken separately from other objects, is part of another
+object.\tabularnewline
+\hline 
+\$1A & INJUREDBIT & Object is injured but not dead.\tabularnewline
+\hline 
+\$1B & ALIVEBIT & Object is alive.\tabularnewline
+\hline 
+\$1C & TOUCHBIT & For object, it has been taken or used. For rooms, it has been visited.\tabularnewline
+\hline 
+\$1D & INVISIBLE & Object is not detected by the game.\tabularnewline
+\hline 
+\$1E & CANTENTERBIT & (or full of water bit)\tabularnewline
+\hline 
+\$1F & NONLANDBIT & Room is in or near the water.\tabularnewline
+\hline 
+\end{tabular}
+\end{table}
+
+\subsection*{Properties}
+
+\begin{table}[H]
+\begin{tabular}{|>{\raggedright}p{0.1\textwidth}|>{\raggedright}p{0.2\textwidth}|>{\raggedright}p{0.6\textwidth}|}
+\hline 
+\$01 & NOT USED & \tabularnewline
+\hline 
+\$02 & NOT USED & \tabularnewline
+\hline 
+\$03 & NOT USED & \tabularnewline
+\hline 
+\$04 & NOT USED & \tabularnewline
+\hline 
+\$05 & SPECIALOBJS & 0-2 entries of (dict addr, paddr for DESCFCN)\tabularnewline
+\hline 
+\$06 & LOCAL-GLOBALS & array of obj \#s that are valid to use with object\tabularnewline
+\hline 
+\$07 & BITCHECK & attribute \# to check???\tabularnewline
+\hline 
+\$08 & TEXT & address of z-string\tabularnewline
+\hline 
+\$09 & SIZE & weight or size of the object\tabularnewline
+\hline 
+\$0A & CAPACITY & maximum weight or size that on object can hold\tabularnewline
+\hline 
+\$0B & FDESC & addr to z-string of first description\tabularnewline
+\hline 
+\$0C & TREASUREVALUE & \tabularnewline
+\hline 
+\$0D & VALUE & pts scores when taking a prized obj or entering a secret room\tabularnewline
+\hline 
+\$0E & LDESC & addr to z-string of \textquotedbl lie on ground\textquotedbl{} description\tabularnewline
+\hline 
+\$0F & HEALTH & 0-5, 0 is healthy, 5 is dead\tabularnewline
+\hline 
+\$10 & ADJECTIVE & adjective value in byte\tabularnewline
+\hline 
+\$11 & ACTION & address to routine\tabularnewline
+\hline 
+\$12 & SYNONYM & vocabulary addresses of synonymous tokens (must have default name
+too)\tabularnewline
+\hline 
+\$13 & LAND & exit\tabularnewline
+\hline 
+\$14 & OUT & exit\tabularnewline
+\hline 
+\$15 & IN & exit\tabularnewline
+\hline 
+\$16 & DOWN & exit\tabularnewline
+\hline 
+\$17 & UP & exit\tabularnewline
+\hline 
+\$18 & SW & exit\tabularnewline
+\hline 
+\$19 & SE & exit\tabularnewline
+\hline 
+\$1A & NW & exit\tabularnewline
+\hline 
+\$1B & NE & exit\tabularnewline
+\hline 
+\$1C & S & exit\tabularnewline
+\hline 
+\$1D & W & exit\tabularnewline
+\hline 
+\$1E & E & exit\tabularnewline
+\hline 
+\$1F & N & exit\tabularnewline
+\hline 
+\end{tabular}
+\end{table}
+
 \end{document}
