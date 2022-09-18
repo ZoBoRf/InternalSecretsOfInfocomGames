@@ -121,7 +121,18 @@ https://ifsecrets.blogspot.com
 
 \end_inset
 
+ and 
+\begin_inset Flex URL
+status open
 
+\begin_layout Plain Layout
+
+https://docs.google.com/document/d/1yNa4M2gN5cG6WoKOSrHtS4_Sp4uwHt1Q7Pvtw8O8hFQ
+\end_layout
+
+\end_inset
+
+ 
 \end_layout
 
 \end_inset
@@ -135,7 +146,7 @@ Everything you wanted to know about the internal working of all text-based
 \end_layout
 
 \begin_layout Date
-April 2019 [2nd Ed.]
+[2022-09-18]
 \end_layout
 
 \begin_layout Standard
@@ -1024,14 +1035,43 @@ Example object property table:
 \end_layout
 
 \begin_layout Standard
-(TBD)
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figures/PropertyTableExample.png
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Property Table Example
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 The meaning of an attribute or property number is consistent in all objects
  in that game but not consistent between games.
- For example.
- the attribute bit and properties used in 
+ For example, the attribute bit and properties used in 
 \series bold
 Zork 1
 \series default
@@ -1088,6 +1128,569 @@ Between the last global variable and the start of the static data (at PURBOT),
  Infocom games have their own custom ZIL routines for reading and writing
  to these structures.
  
+\end_layout
+
+\begin_layout Subsection
+Vocabulary
+\end_layout
+
+\begin_layout Standard
+The vocabulary contains information about every valid word in the game.
+ It begins with a header which contains the information about separator
+ characters and the entries themselves.
+\end_layout
+
+\begin_layout Itemize
+1 byte - N number of separator characters (used to mark the end of words)
+\end_layout
+
+\begin_layout Itemize
+N bytes - list of N separator characters
+\end_layout
+
+\begin_layout Itemize
+1 byte - length of each vocabulary entry (Z-string + word type data)
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+ZIP 1-3 games: 4 bytes for Z-string
+\end_layout
+
+\begin_layout Itemize
+EZIP and XZIP games: 6 bytes for Z-string
+\end_layout
+
+\begin_layout Itemize
+All games use 3 bytes for the word type data except Sherlock (uses 2 bytes)
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+2 bytes - number of vocabulary entries
+\end_layout
+
+\begin_layout Standard
+A long list of vocabulary entries will follow this header.
+ Each entry starts with a 4 or 6 byte Z-string of the word.
+ The remaining 2 or 3 bytes contain:
+\end_layout
+
+\begin_layout Itemize
+1 byte for word type:
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="8">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="10col%">
+<column alignment="center" valignment="top" width="10col%">
+<column alignment="center" valignment="top" width="10col%">
+<column alignment="center" valignment="top" width="10col%">
+<column alignment="center" valignment="top" width="10col%">
+<column alignment="center" valignment="top" width="10col%">
+<column alignment="center" valignment="top" width="10col%">
+<column alignment="center" valignment="top" width="10col%">
+<row>
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Primary word type
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Secondary word type
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit 7
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit 6
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit 5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit 4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit 3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit 2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit 1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit 0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+$80
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+$40
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+$20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+$10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+$08
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+$04
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+$00 = Noun
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+$02 = Adjective
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Noun
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Verb
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Adjective
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Direction
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Preposition
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Special
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+$01 = Verb
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+$03 = Direction
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+1 byte for second ID value - The secondary ID value if a secondary/non-default
+ word type is requested (original format, all games except 
+\series bold
+Sherlock
+\series default
+) 
+\end_layout
+
+\begin_layout Itemize
+1 byte for default ID value - The default ID value 
+\end_layout
+
+\begin_layout Standard
+ID values are a special number that corresponds to the token such as a verb
+ number for a verb.
+ For example, the default ID value for a the noun “MATCH” would be its object
+ number.
+ During word type matching, the default value is returned if there is a
+ match.
+\end_layout
+
+\begin_layout Standard
+If a secondary word type is also given and is a valid word type, then the
+ secondary ID value is given.
+ If there is no match, then the default one is returned.
+ For example, “INFLAT” has its last 3 bytes as [62 a8 d3].
+ Bits 7-2 of the word type value $60 indicate this token can be a verb ($40)
+ or adjective ($20).
+ The last 2 bits ($02 in this example) indicates the secondary word type,
+ adjective.
+ So the default word type is a verb.
+ When the program checks if “INFLAT” is a verb or adjective:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+call wt?(
+\begin_inset Quotes eld
+\end_inset
+
+INFLAT
+\begin_inset Quotes erd
+\end_inset
+
+,$40) or <WT? 
+\begin_inset Quotes eld
+\end_inset
+
+INFLAT
+\begin_inset Quotes erd
+\end_inset
+
+, PS?VERB>
+\end_layout
+
+\begin_layout Plain Layout
+
+call wt?(
+\begin_inset Quotes eld
+\end_inset
+
+INFLAT
+\begin_inset Quotes erd
+\end_inset
+
+,$20) or <WT? 
+\begin_inset Quotes eld
+\end_inset
+
+INFLAT
+\begin_inset Quotes erd
+\end_inset
+
+, PS?ADJECTIVE>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+the word type matching routine will return the default, $d3.
+ If a second word type ($02) is also passed to the matching routine:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+call wt?(
+\begin_inset Quotes eld
+\end_inset
+
+INFLAT
+\begin_inset Quotes erd
+\end_inset
+
+,$40,$02) or <WT? 
+\begin_inset Quotes eld
+\end_inset
+
+INFLAT
+\begin_inset Quotes erd
+\end_inset
+
+, PS?VERB, P1?ADJECTIVE>
+\end_layout
+
+\begin_layout Plain Layout
+
+call wt?(
+\begin_inset Quotes eld
+\end_inset
+
+INFLAT
+\begin_inset Quotes erd
+\end_inset
+
+,$20,$02) or <WT? 
+\begin_inset Quotes eld
+\end_inset
+
+INFLAT
+\begin_inset Quotes erd
+\end_inset
+
+, PS?ADJECTIVE, P1?ADJECTIVE>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+then the routine will return $a8.
+ If the second word type does not match, such as $03 (for direction), then
+ the default, $d3, will be returned.
+\end_layout
+
+\begin_layout Standard
+The E/XZIP vocabulary introduced 6 bytes for the Z-string which allowed
+ for longer tokens (maximum of 9 characters).
+ The size of each entry in Vocabulary grew to 9 bytes.
+ A newer compressed vocabulary entry format was also created which used
+ a single ID value.
+ The need for a second ID value mainly occurred with tokens that can be
+ a direction and preposition.
+ This format only had 8 byte entries.
+ Only 
+\series bold
+Sherlock
+\series default
+ used this compressed vocabulary format and had modified syntax routines
+ which used the PREP table to look for the this second ID value (preposition
+ value) in situations where a token could a direction or preposition.
+\end_layout
+
+\begin_layout Subsection
+Strings
+\end_layout
+
+\begin_layout Standard
+Much of the code for Infocom games are the various descriptions and text
+ responses that are stored as strings in the special Z-character format.
+ It is a compressed format where the characters are represented by 5 bits
+ instead of 8.
+ This allows 3 letters to be stored in the space of 2 bytes instead of 3.
+ More detailed information including the character sets is in the Z-Machine
+ Standards Document.
 \end_layout
 
 \begin_layout Section
@@ -4241,6 +4844,7 @@ PARSER first divides up the command into two separate commands with the
 \end_layout
 
 \begin_layout Standard
+
 \begin_inset VSpace defskip
 \end_inset
 
@@ -6812,6 +7416,7 @@ In another example, a room contains a red card, red flower, and blue flower.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "basicstyle={\ttfamily}"
 inline false
 status open
 
@@ -6895,6 +7500,7 @@ GET-OBJECT which matches the token with an object would be able to figure
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "basicstyle={\ttfamily}"
 inline false
 status open
 
@@ -9964,7 +10570,7 @@ Return: True if object matches
 
 \begin_layout Standard
 Infocom games can use three different identifiers to see if an object matches
- the one requested in a command: noun (P-NAM), adjective(P-ADJ), and GWIMBIT.
+ the one requested in a command: noun (P-NAM), adjective (P-ADJ), and GWIMBIT.
  THIS-IT? will see if the given object matches any of these identifiers.
  First, the routine will see if the object is visible.
  So invisible (or hidden) objects cannot be matched.
@@ -13760,7 +14366,6 @@ CHRSET
 \noun off
 \color none
 Pointer to character set table
-
 \end_layout
 
 \end_inset
@@ -16424,7 +17029,6 @@ word 11
 \uwave off
 \noun off
 \color none
-
 writable
 \end_layout
 

@@ -1,8 +1,7 @@
-%% LyX 2.3.1-1 created this file.  For more info, see http://www.lyx.org/.
+%% LyX 2.3.6.1 created this file.  For more info, see http://www.lyx.org/.
 %% Do not edit unless you really know what you are doing.
 \documentclass[12pt,twoside,american]{scrartcl}
 \usepackage[T1]{fontenc}
-\usepackage[latin9]{inputenc}
 \usepackage{geometry}
 \geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=1cm,footskip=1cm}
 \pagestyle{headings}
@@ -12,8 +11,8 @@
 \usepackage{array}
 \usepackage{float}
 \usepackage{url}
-\usepackage{tablefootnote}
 \usepackage{graphicx}
+\usepackage{tablefootnote}
 \usepackage[unicode=true,
  bookmarks=true,bookmarksnumbered=true,bookmarksopen=false,
  breaklinks=true,pdfborder={0 0 1},backref=false,colorlinks=true]
@@ -41,10 +40,10 @@
 
 \begin{document}
 \author{Michael Ko}
-\title{Internal Secrets of Infocom Games\thanks{\protect\url{https://ifsecrets.blogspot.com}}}
+\title{Internal Secrets of Infocom Games\thanks{\protect\url{https://ifsecrets.blogspot.com} and \protect\url{https://docs.google.com/document/d/1yNa4M2gN5cG6WoKOSrHtS4_Sp4uwHt1Q7Pvtw8O8hFQ} }}
 \subtitle{Everything you wanted to know about the internal working of all text-based
 Infocom games}
-\date{April 2019 {[}2nd Ed.{]}}
+\date{{[}2022-09-18{]}}
 
 \maketitle
 \pagebreak\tableofcontents{}
@@ -277,6 +276,7 @@ memory)\tabularnewline
 
 \caption{ZIP 1 Story Header}
 \end{table}
+
 Other information would be added to the story header with newer ZIP
 versions. The complete layout is in Appendix A.
 
@@ -368,10 +368,14 @@ property, listed in descending order
 \end{itemize}
 Example object property table:
 
-(TBD)
+\begin{figure}[H]
+\includegraphics[width=1\textwidth]{figures/PropertyTableExample}
+
+\caption{Property Table Example}
+\end{figure}
 
 The meaning of an attribute or property number is consistent in all
-objects in that game but not consistent between games. For example.
+objects in that game but not consistent between games. For example,
 the attribute bit and properties used in \textbf{Zork 1} are listed
 in Appendices B and C. The number of objects is not specifically stored
 here but calculated based upon the number of object entries. It can
@@ -412,6 +416,103 @@ a game does not need all 240 global variables, the space for those
 unused variables can be used for buffers and tables. Infocom games
 have their own custom ZIL routines for reading and writing to these
 structures. 
+
+\subsection{Vocabulary}
+
+The vocabulary contains information about every valid word in the
+game. It begins with a header which contains the information about
+separator characters and the entries themselves.
+\begin{itemize}
+\item 1 byte - N number of separator characters (used to mark the end of
+words)
+\item N bytes - list of N separator characters
+\item 1 byte - length of each vocabulary entry (Z-string + word type data)
+\begin{itemize}
+\item ZIP 1-3 games: 4 bytes for Z-string
+\item EZIP and XZIP games: 6 bytes for Z-string
+\item All games use 3 bytes for the word type data except Sherlock (uses
+2 bytes)
+\end{itemize}
+\item 2 bytes - number of vocabulary entries
+\end{itemize}
+A long list of vocabulary entries will follow this header. Each entry
+starts with a 4 or 6 byte Z-string of the word. The remaining 2 or
+3 bytes contain:
+\begin{itemize}
+\item 1 byte for word type:
+\end{itemize}
+\medskip{}
+
+\begin{tabular}{|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|>{\centering}p{0.1\columnwidth}|}
+\hline 
+\multicolumn{6}{|c|}{Primary word type} & \multicolumn{2}{c|}{Secondary word type}\tabularnewline
+\hline 
+Bit 7 & Bit 6 & Bit 5 & Bit 4 & Bit 3 & Bit 2 & Bit 1 & Bit 0\tabularnewline
+\hline 
+\$80 & \$40 & \$20 & \$10 & \$08 & \$04 & \$00 = Noun & \$02 = Adjective\tabularnewline
+\hline 
+Noun & Verb & Adjective & Direction & Preposition & Special & \$01 = Verb & \$03 = Direction\tabularnewline
+\hline 
+\end{tabular}
+
+\medskip{}
+
+\begin{itemize}
+\item 1 byte for second ID value - The secondary ID value if a secondary/non-default
+word type is requested (original format, all games except \textbf{Sherlock}) 
+\item 1 byte for default ID value - The default ID value 
+\end{itemize}
+ID values are a special number that corresponds to the token such
+as a verb number for a verb. For example, the default ID value for
+a the noun \textquotedblleft MATCH\textquotedblright{} would be its
+object number. During word type matching, the default value is returned
+if there is a match.
+
+If a secondary word type is also given and is a valid word type, then
+the secondary ID value is given. If there is no match, then the default
+one is returned. For example, \textquotedblleft INFLAT\textquotedblright{}
+has its last 3 bytes as {[}62 a8 d3{]}. Bits 7-2 of the word type
+value \$60 indicate this token can be a verb (\$40) or adjective (\$20).
+The last 2 bits (\$02 in this example) indicates the secondary word
+type, adjective. So the default word type is a verb. When the program
+checks if \textquotedblleft INFLAT\textquotedblright{} is a verb or
+adjective:
+
+\begin{lstlisting}[basicstyle={\ttfamily}]
+call wt?("INFLAT",$40) or <WT? "INFLAT", PS?VERB>
+call wt?("INFLAT",$20) or <WT? "INFLAT", PS?ADJECTIVE>
+\end{lstlisting}
+
+the word type matching routine will return the default, \$d3. If a
+second word type (\$02) is also passed to the matching routine:
+
+\begin{lstlisting}[basicstyle={\ttfamily}]
+call wt?("INFLAT",$40,$02) or <WT? "INFLAT", PS?VERB, P1?ADJECTIVE>
+call wt?("INFLAT",$20,$02) or <WT? "INFLAT", PS?ADJECTIVE, P1?ADJECTIVE>
+\end{lstlisting}
+
+then the routine will return \$a8. If the second word type does not
+match, such as \$03 (for direction), then the default, \$d3, will
+be returned.
+
+The E/XZIP vocabulary introduced 6 bytes for the Z-string which allowed
+for longer tokens (maximum of 9 characters). The size of each entry
+in Vocabulary grew to 9 bytes. A newer compressed vocabulary entry
+format was also created which used a single ID value. The need for
+a second ID value mainly occurred with tokens that can be a direction
+and preposition. This format only had 8 byte entries. Only \textbf{Sherlock}
+used this compressed vocabulary format and had modified syntax routines
+which used the PREP table to look for the this second ID value (preposition
+value) in situations where a token could a direction or preposition.
+
+\subsection{Strings}
+
+Much of the code for Infocom games are the various descriptions and
+text responses that are stored as strings in the special Z-character
+format. It is a compressed format where the characters are represented
+by 5 bits instead of 8. This allows 3 letters to be stored in the
+space of 2 bytes instead of 3. More detailed information including
+the character sets is in the Z-Machine Standards Document.
 
 \section{Syntax Entries - The Biggest Mystery of them All}
 
@@ -724,6 +825,7 @@ of function calls by MAIN-LOOP.
 
 \end{figure}
 
+
 \section{GO - Gentlemen, Start Your Engines!}
 \begin{description}
 \item [{Arguments:}] None
@@ -958,6 +1060,7 @@ byte token data blocks to represent the words in the input.
 
 \end{figure}
 
+
 \subsection{PARSER Variables and Grammatical Structure Definitions}
 
 In \textquotedblleft The Parser\textquoteright s Role\textquotedblright{}
@@ -1066,6 +1169,7 @@ included token in the particular clause.
 \caption{Parser Table}
 
 \end{figure}
+
 
 \subsection{Checking Word Types with WT?}
 \begin{description}
@@ -1287,6 +1391,7 @@ previous command becomes:
 
 \texttt{TURN OFF THE LAMP''}
 
+\selectlanguage{american}%
 \medskip{}
 
 To have actors perform actions, PERFORM (discussed later) will call
@@ -1400,6 +1505,7 @@ in P-NUMBER.
 \caption{Numbers, Time}
 
 \end{figure}
+
 Routines can then search for the \textquotedblleft intnum\textquotedblright{}
 token and use the value in the corresponding global variable. Because
 of this design, only one number or time value could be used in each
@@ -1576,6 +1682,7 @@ entry in AGAIN-LEXV.
 
 \caption{INBUF-ADD and OOPS-TABLE}
 \end{figure}
+
 
 \subsection{UNDO}
 
@@ -1848,7 +1955,7 @@ by PARSER.
 In another example, a room contains a red card, red flower, and blue
 flower. If the command was
 
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle={\ttfamily}]
 GET FLOWER
 \end{lstlisting}
 
@@ -1875,7 +1982,7 @@ GET-OBJECT which matches the token with an object would be able to
 figure out you meant the blue flower as there is only one object with
 the BLUE adjective. If the command was
 
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle={\ttfamily}]
 GET RED
 \end{lstlisting}
 
@@ -2438,6 +2545,7 @@ information.
 
 \caption{Syntax Check}
 \end{figure}
+
 \newpage Possible Outcomes:\medskip{}
 
 \begin{tabular}{|>{\raggedright}p{0.2\textwidth}|>{\raggedright}p{0.2\textwidth}|>{\raggedright}p{0.2\textwidth}|>{\raggedright}p{0.2\textwidth}|}
@@ -2984,6 +3092,7 @@ The matched objects are saved in the table addressed passed to SEARCH-LIST.
 \caption{Search Object}
 
 \end{figure}
+
 For example, SEARCH-LIST is examining Room/Person 1. For each search
 mode, the listed objects will be checked:
 
@@ -3068,7 +3177,7 @@ and restored afterwards.
 \item [{Return:}] True if object matches
 \end{description}
 Infocom games can use three different identifiers to see if an object
-matches the one requested in a command: noun (P-NAM), adjective(P-ADJ),
+matches the one requested in a command: noun (P-NAM), adjective (P-ADJ),
 and GWIMBIT. THIS-IT? will see if the given object matches any of
 these identifiers. First, the routine will see if the object is visible.
 So invisible (or hidden) objects cannot be matched. THIS-IT? will
@@ -3485,6 +3594,7 @@ The address to this new entry is returned.
 \caption{Interrupts}
 
 \end{figure}
+
 
 \subsection{QUEUE - Setting Up the Interrupts}
 \begin{description}
@@ -4295,6 +4405,7 @@ Base of High Memory (start of non-preloaded data)\tabularnewline
 \end{tabular}
 \end{table}
 
+
 \subsubsection*{ZIP version 2 added the abbreviation information}
 
 \begin{table}[H]
@@ -4308,6 +4419,7 @@ as SERIAL, SERI1, and SERI2)\tabularnewline
 \end{tabular}
 \end{table}
 
+
 \subsubsection*{ZIP version 3 added game information}
 
 \begin{table}[H]
@@ -4319,6 +4431,7 @@ as SERIAL, SERI1, and SERI2)\tabularnewline
 \hline 
 \end{tabular}
 \end{table}
+
 
 \subsubsection*{EZIP version extended story header layout}
 
@@ -4333,6 +4446,7 @@ Byte 21: SCRH, Screen width in characters \tabularnewline
 \hline 
 \end{tabular}
 \end{table}
+
 
 \subsubsection*{XZIP also extended story header layout}
 
@@ -4368,6 +4482,7 @@ Byte 2D: Foreground color\tabularnewline
 \end{tabular}
 \end{table}
 
+
 \subsection*{MODE Byte}
 
 The MODE byte is the the second byte in the ZVERSION word of the story
@@ -4402,6 +4517,7 @@ Bit No. & Bit Name & Function\tabularnewline
 \end{tabular}
 \end{table}
 
+
 \subsubsection*{Mode bits for EZIP (ZIP version 4)}
 
 \begin{table}[H]
@@ -4428,6 +4544,7 @@ Bit No. & EZIP Bit Name & Function\tabularnewline
 \hline 
 \end{tabular}
 \end{table}
+
 0 = not available/ignored, 1 = available
 
 \subsubsection*{Mode bits for XZIP (ZIP version 5)}
@@ -4456,6 +4573,7 @@ Bit No. & Bit Name & Function\tabularnewline
 \hline 
 \end{tabular}
 \end{table}
+
 0 = not available/ignored, 1 = available
 
 \subsubsection*{Extension table}
@@ -4488,6 +4606,7 @@ JSTAT & word 11 & writable\tabularnewline
 \end{tabular}
 \end{table}
 
+
 \subsection*{FLAGS Bits}
 
 \subsubsection*{FLAGS bits for ZIP}
@@ -4516,6 +4635,7 @@ Bit No. & Versions & Bit Name & Function\tabularnewline
 \hline 
 \end{tabular}
 \end{table}
+
 From E- and X-ZIP - Internal Infocom document
 
 \addsec{Appendix B: Attributes and Properties From \textquotedblleft Learning
@@ -4842,6 +4962,7 @@ Byte 4: 00\tabularnewline
 \hline 
 \end{tabular}
 \end{table}
+
 ZIL-course from the Infocom Cabinet does mention two attributes and
 one property not mentioned in \textquotedblleft Learning ZIL\textquotedblright :
 \begin{itemize}
@@ -4932,6 +5053,7 @@ object.\tabularnewline
 \hline 
 \end{tabular}
 \end{table}
+
 
 \subsection*{Properties}
 
